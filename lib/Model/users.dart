@@ -28,17 +28,18 @@ class usersModel {
     type = snapshot["type"];
     suID = snapshot["suID"];
     uid=snapshot.id;
+    check=false;
   }
 
-  usersModel.fromJson(DocumentSnapshot map) {
+  usersModel.fromJson(Map map) {
     userName = map["username"];
     password = map["password"];
     email = map["email"];
     phone = map["phone"];
     type = map["type"];
     suID = map["suID"];
-    uid=map.id;
-    check=false;
+    uid=map["uid"];
+    check=map["check"];
   }
   toJson() {
     return {
@@ -47,7 +48,9 @@ class usersModel {
       "email": email,
       "phone": phone,
       "type": type,
-      "suID": suID
+      "suID": suID,
+      "uid":uid,
+      "check":check
     };
   }
 }

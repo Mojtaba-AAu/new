@@ -25,7 +25,7 @@ class _StoreManagerState extends State<StoreManager>
     super.initState();
 
     _animationController = AnimationController(
-        vsync: this, duration: const Duration(milliseconds: 300))
+        vsync: this, duration: const Duration(milliseconds: 600))
       ..addListener(() {
         setState(() {});
       });
@@ -80,7 +80,7 @@ class _StoreManagerState extends State<StoreManager>
                                   color: Colors.grey,
                                 ),
                                 Text(
-                                  "الوصف : ${storeController.store[index].Description}",
+                                  "الوصف : ${storeController.store[index].description}",
                                   overflow: TextOverflow.ellipsis,
                                 ),
                               ],
@@ -88,8 +88,17 @@ class _StoreManagerState extends State<StoreManager>
                           ),
                           const Spacer(),
                           Container(
+                            decoration: BoxDecoration(
+                                color: Colors.blueGrey,
+                                borderRadius: BorderRadius.circular(50),
+                                border:
+                                    Border.all(color: Get.theme.colorScheme.secondary, width: 2)),
                             child: IconButton(
-                                onPressed: () {}, icon: const Icon(Icons.edit)),
+                                onPressed: () {},
+                                icon: Icon(
+                                  Icons.edit,
+                                  color: Get.theme.colorScheme.secondary,
+                                )),
                           )
                         ],
                       ),
@@ -127,7 +136,9 @@ class _StoreManagerState extends State<StoreManager>
             foregroundColor: Colors.white,
             backgroundColor: Colors.amber.shade800,
             label: 'علامة تجارية',
-            onPressed: () {},
+            onPressed: () {
+              addMarking();
+            },
           ),
           //  Your other SpeedDialChildren go here.
         ],
@@ -154,11 +165,7 @@ class _StoreManagerState extends State<StoreManager>
                             controller: storeController.name,
                             decoration: ThemeHelper()
                                 .textInputDecoration("إسم المتجر", Icons.store),
-                            onChanged: (value) {
-                              if (value.length <= 4) {
-                                print("jjjj");
-                              }
-                            },
+                            onChanged: (value) {},
                             validator: (value) {
                               if (value!.trim().isEmpty) {
                                 return "ادخل إسم المتجر";
@@ -216,18 +223,115 @@ class _StoreManagerState extends State<StoreManager>
                                       Get.back();
                                     } else {
                                       Get.defaultDialog(
-                                          cancel: MaterialButton(
-                                              onPressed: () {
-                                                Get.back();
-                                              },
-                                              child: const Text("حسنا")),
                                           confirm: MaterialButton(
                                               onPressed: () {
                                                 Get.back();
+                                                Get.to(() => GoogleMaps());
                                               },
                                               child: const Text("حسنا")),
-                                          title: "حدد مكان المتجر",titleStyle: TextStyle(color: Colors.red),
-                                          content: Image.asset("images/profile.png",width: 200,height: 200,));
+                                          title: "حدد مكان المتجر",
+                                          titleStyle:
+                                              TextStyle(color: Colors.red),
+                                          content: Image.asset(
+                                            "images/location.png",
+                                            width: 150,
+                                            height: 150,
+                                          ));
+                                    }
+                                  }
+                                }),
+                          ),
+                        ],
+                      ),
+                    ),
+                  )),
+        ),
+      ),
+      backgroundColor: Colors.white,
+      isScrollControlled: true,
+      elevation: 0,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(10), topRight: Radius.circular(10)),
+      ),
+    );
+  }
+  void addMarking() {
+    final formKey = GlobalKey<FormState>();
+    Get.bottomSheet(
+      Container(
+        height: Get.height * 0.5,
+        child: SingleChildScrollView(
+          child: GetBuilder<StoreController>(
+              init: StoreController(),
+              builder: (storeController) => Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Form(
+                      key: formKey,
+                      child: Column(
+                        children: [
+                          TextFormField(
+                            textInputAction: TextInputAction.next,
+                            // controller: storeController.name,
+                            decoration: ThemeHelper()
+                                .textInputDecoration("إسم المتجر", Icons.store),
+                            onChanged: (value) {},
+                            validator: (value) {
+                              if (value!.trim().isEmpty) {
+                                return "ادخل إسم المتجر";
+                              }
+                              return null;
+                            },
+                          ),
+                          const SizedBox(
+                            height: 30,
+                          ),
+                          MaterialButton(
+                            onPressed: () {
+                              Get.to(() => GoogleMaps());
+                            },
+                            child: const Text("تحديد مكان المتجر"),
+                          ),
+                          const SizedBox(
+                            height: 15,
+                          ),
+                          Container(
+                            decoration: ThemeHelper().buttonBoxDecoration(),
+                            child: ElevatedButton(
+                                style: ThemeHelper().buttonStyle(),
+                                child: const Padding(
+                                  padding: EdgeInsets.symmetric(
+                                      vertical: 10.0, horizontal: 40.0),
+                                  child: Text(
+                                    'تعيين',
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 16.0,
+                                        fontFamily: 'Cairo'),
+                                  ),
+                                ),
+                                onPressed: () {
+                                  if (formKey.currentState!.validate()) {
+                                    if (storeController.longitude != null &&
+                                        storeController.latitude != null) {
+                                      storeController.addStore();
+                                      Get.back();
+                                    } else {
+                                      Get.defaultDialog(
+                                          confirm: MaterialButton(
+                                              onPressed: () {
+                                                Get.back();
+                                                Get.to(() => GoogleMaps());
+                                              },
+                                              child: const Text("حسنا")),
+                                          title: "حدد مكان المتجر",
+                                          titleStyle:
+                                              TextStyle(color: Colors.red),
+                                          content: Image.asset(
+                                            "images/location.png",
+                                            width: 150,
+                                            height: 150,
+                                          ));
                                     }
                                   }
                                 }),

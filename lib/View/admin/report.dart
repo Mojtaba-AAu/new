@@ -5,15 +5,15 @@ import 'package:project101/Controller/Admin/report_controller.dart';
 import 'package:project101/theme_helper.dart';
 
 class AD_Report extends GetWidget<ReportsController> {
-  AD_Report({Key? key}) : super(key: key);
+  const AD_Report({Key? key}) : super(key: key);
 
-  ReportsController _controller = Get.put(ReportsController());
+  // ReportsController _controller = Get.put(ReportsController());
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
           title: const Text("التقارير"), flexibleSpace: ThemeHelper().appBar()),
-      body: Center(
+      body: SafeArea(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [

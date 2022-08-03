@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:project101/Controller/Admin/user_controller.dart';
+import 'package:project101/View/Account/g.dart';
 import 'package:project101/View/Supervisor/product_manager.dart';
 import 'package:project101/View/Supervisor/reports.dart';
 import 'package:project101/View/Supervisor/store_manager.dart';
 import 'package:project101/View/Supervisor/user_manager.dart';
-import 'package:project101/View/admin/rep.dart';
 
 
 class SU_Home extends GetWidget<UserController> {
@@ -30,7 +30,7 @@ class SU_Home extends GetWidget<UserController> {
                   color: Colors.blue.shade200,
                   child: ListTile(
                     title: const Text("الاسم"),
-                    subtitle: Text(controller.users[0].userName.toString()),
+                    subtitle: Text(controller.UsersModel!.userName.toString()),
                     onTap: (){
 
                     },
@@ -83,7 +83,8 @@ class SU_Home extends GetWidget<UserController> {
                         ),
                       ),
                       onPressed: (){
-
+                        controller.dataStore.remove("user");
+                        Get.offAll(() => LoginPage());
                       }
                   ),
                 ),
@@ -95,83 +96,83 @@ class SU_Home extends GetWidget<UserController> {
     );
   }
 }
-_editUser(email,mobile,user){
-  return Form(
-    key: user,
-    child: Column(
-      children: <Widget>[
-        Padding(
-          padding: const EdgeInsets.only(
-              top: 20.0,
-              bottom: 5.0,
-              left: 25.0,
-              right: 25.0),
-          child: TextFormField(
-            // controller: email,
-            decoration: InputDecoration(
-                prefixIcon: const Icon(Icons.person,),
-                // icon: Icon(Icons.person),
-                contentPadding: const EdgeInsets.all(4),
-                hintText: "إسم المستخدم",
-                filled: true,
-                fillColor: Colors.grey[200],
-                enabledBorder: OutlineInputBorder(
-                    borderSide: BorderSide(
-                        color: Colors.grey.shade700,
-                        style: BorderStyle.solid,
-                        width: 2)),
-                focusedBorder: const OutlineInputBorder(
-                    borderSide: BorderSide(
-                        color: Colors.blue,
-                        style: BorderStyle.solid,
-                        width: 2))),
-            validator: (value) {
-              if (value!.isEmpty) {
-                return "ادخل اسم المستخدم";
-              }
-              return null;
-            },
-          ),
-        ),
-        Padding(
-          padding: const EdgeInsets.only(
-              top: 20.0,
-              bottom: 50.0,
-              left: 25.0,
-              right: 25.0),
-          child: TextFormField(
-            // controller: mobile,
-            obscureText: true,
-            decoration:  InputDecoration(
-                prefixIcon: const Icon(Icons.password),
-                // icon: Icon(Icons.person),
-                contentPadding: EdgeInsets.all(4),
-                hintText: " كلمة المرور",
-                filled: true,
-                fillColor: Colors.grey.shade300,
-                enabledBorder: OutlineInputBorder(
-                    borderSide: BorderSide(
-                        color: Colors.grey.shade700,
-                        style: BorderStyle.solid,
-                        width: 2)),
-                focusedBorder: const OutlineInputBorder(
-                    borderSide: BorderSide(
-                        color: Colors.blue,
-                        style: BorderStyle.solid,
-                        width: 2))),
-            validator: (value) {
-              if (value!.isEmpty) {
-                return "ادخل كلمة المرور";
-              }
-              return null;
-            },
-          ),
-        ),
-        // Container(child: Text(False?"رقم الهاتف غير صحيح":"",style: TextStyle(color: Colors.red,fontFamily: 'Cairo'),),)
-      ],
-    ),
-  );
-}
+// _editUser(email,mobile,user){
+//   return Form(
+//     key: user,
+//     child: Column(
+//       children: <Widget>[
+//         Padding(
+//           padding: const EdgeInsets.only(
+//               top: 20.0,
+//               bottom: 5.0,
+//               left: 25.0,
+//               right: 25.0),
+//           child: TextFormField(
+//             // controller: email,
+//             decoration: InputDecoration(
+//                 prefixIcon: const Icon(Icons.person,),
+//                 // icon: Icon(Icons.person),
+//                 contentPadding: const EdgeInsets.all(4),
+//                 hintText: "إسم المستخدم",
+//                 filled: true,
+//                 fillColor: Colors.grey[200],
+//                 enabledBorder: OutlineInputBorder(
+//                     borderSide: BorderSide(
+//                         color: Colors.grey.shade700,
+//                         style: BorderStyle.solid,
+//                         width: 2)),
+//                 focusedBorder: const OutlineInputBorder(
+//                     borderSide: BorderSide(
+//                         color: Colors.blue,
+//                         style: BorderStyle.solid,
+//                         width: 2))),
+//             validator: (value) {
+//               if (value!.isEmpty) {
+//                 return "ادخل اسم المستخدم";
+//               }
+//               return null;
+//             },
+//           ),
+//         ),
+//         Padding(
+//           padding: const EdgeInsets.only(
+//               top: 20.0,
+//               bottom: 50.0,
+//               left: 25.0,
+//               right: 25.0),
+//           child: TextFormField(
+//             // controller: mobile,
+//             obscureText: true,
+//             decoration:  InputDecoration(
+//                 prefixIcon: const Icon(Icons.password),
+//                 // icon: Icon(Icons.person),
+//                 contentPadding: EdgeInsets.all(4),
+//                 hintText: " كلمة المرور",
+//                 filled: true,
+//                 fillColor: Colors.grey.shade300,
+//                 enabledBorder: OutlineInputBorder(
+//                     borderSide: BorderSide(
+//                         color: Colors.grey.shade700,
+//                         style: BorderStyle.solid,
+//                         width: 2)),
+//                 focusedBorder: const OutlineInputBorder(
+//                     borderSide: BorderSide(
+//                         color: Colors.blue,
+//                         style: BorderStyle.solid,
+//                         width: 2))),
+//             validator: (value) {
+//               if (value!.isEmpty) {
+//                 return "ادخل كلمة المرور";
+//               }
+//               return null;
+//             },
+//           ),
+//         ),
+//         // Container(child: Text(False?"رقم الهاتف غير صحيح":"",style: TextStyle(color: Colors.red,fontFamily: 'Cairo'),),)
+//       ],
+//     ),
+//   );
+// }
 
 class Choice {
   const Choice({required this.title, required this.image});

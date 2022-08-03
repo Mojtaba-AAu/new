@@ -1,11 +1,10 @@
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:hexcolor/hexcolor.dart';
 
 class ThemeHelper{
 
-  InputDecoration textInputDecoration(String lableText,[IconData iconData=Icons.signal_wifi_statusbar_null]){
+  InputDecoration textInputDecoration(String lableText,[IconData? iconData]){
     return InputDecoration(
       labelText: lableText,
       // hintText: hintText,
@@ -32,7 +31,7 @@ class ThemeHelper{
 
   BoxDecoration buttonBoxDecoration() {
     Color c1 = Get.theme.primaryColor;
-    Color c2 = Get.theme.accentColor;
+    Color c2 = Get.theme.colorScheme.secondary;
     return BoxDecoration(
       boxShadow: const [
         BoxShadow(color: Colors.black26, offset: Offset(0, 4), blurRadius: 5.0)
@@ -70,7 +69,7 @@ class ThemeHelper{
         gradient:  LinearGradient(
             colors: [
              Get.theme.primaryColor.withOpacity(0.4),
-              Get.theme.accentColor.withOpacity(0.7),
+              Get.theme.colorScheme.secondary.withOpacity(0.7),
             ],
             begin: const FractionalOffset(0.0, 0.0),
             end: const FractionalOffset(1.0, 0.0),

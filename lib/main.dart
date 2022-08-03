@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:get/get.dart';
-import 'package:project101/View/Account/login.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:project101/helper.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'View/Account/signIn.dart';
@@ -10,6 +10,7 @@ import 'View/Account/signIn.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
+  await GetStorage.init();
   runApp(const MyApp());
 }
 class MyApp extends StatelessWidget {
@@ -36,7 +37,9 @@ class MyApp extends StatelessWidget {
       title: "إدارة المبيعات",
       theme: ThemeData(
           primaryColor: _primaryColor,
-          accentColor: _accentColor,
+          colorScheme: ColorScheme.fromSwatch().copyWith(
+            secondary: _accentColor, // Your accent color
+          ),
           scaffoldBackgroundColor: Colors.grey.shade100,
           primarySwatch: Colors.blueGrey,
           fontFamily: 'Cairo'

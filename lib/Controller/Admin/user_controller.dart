@@ -1,15 +1,17 @@
+import 'dart:convert';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:hexcolor/hexcolor.dart';
 import 'package:project101/Model/users.dart';
 import 'package:project101/View/Supervisor/home.dart';
 import 'package:project101/View/admin/home.dart';
-import 'package:project101/theme_helper.dart';
+import 'package:get_storage/get_storage.dart';
 
 class UserController extends GetxController {
-  var users = <usersModel>[].obs;
+  var _users = <usersModel>[].obs;
+  usersModel? UsersModel;
   var docID = [];
   var isLoad = false.obs;
   var username = TextEditingController();
@@ -19,51 +21,38 @@ class UserController extends GetxController {
   final CollectionReference adminReference =
       FirebaseFirestore.instance.collection("admin");
 
+  final dataStore = GetStorage();
   getUsers() async {
     isLoad(true);
     try {
-      // await userReference.get().then((value) {
-      //   docID.clear();
-      //   value.docs.forEach((element) {
-      //     docID.add(element.id);
-      //   });
-      // });
-      // users.clear();
-      // for (int i = 0; i < docID.length; i++) {
-      //   await userReference.doc(docID[i]).get().then((value) {
-      //     print(value.data());
-      //     if (value.get("username") == username.text.trim().toString() &&
-      //         value.get("password") == password.text.trim().toString()) {
-      //       users.add(usersModel.fromDocumentSnapshot(value));
-      //     }
-      //   });
-      // }
-      users.clear();
-     await userReference
+      _users.clear();
+      await userReference
           .where("username", isEqualTo: username.text)
           .where("password", isEqualTo: password.text)
           .get()
           .then((value) {
-            value.docs.forEach((element) {
-              users.add(usersModel.fromDocumentSnapshot(element));
-            });
+        value.docs.forEach((element) {
+          _users.add(usersModel.fromDocumentSnapshot(element));
+        });
       });
+      // await adminReference.get().then((value) {});
+
       isLoad(false);
-      print(users.length);
-      if (users.isEmpty) {
+      print(_users.length);
+      if (_users.isEmpty) {
         Get.snackbar("خطاء", "خطاء في اسم المستخدم او كلمة المرور",
             colorText: Colors.redAccent, snackPosition: SnackPosition.BOTTOM);
+      } else {
+        setUser(_users[0]);
       }
-      adminReference.get().then((value) {});
-      // for (int i = 0; i < users.length; i++) {
-        if (users[0].type == 0) {
-          Get.offAll(() => AD_Home());
-        } else if (users[0].type == 1) {
-          Get.offAll(() => SU_Home());
-        } else if (users[0].type == 2) {
-          Get.offAll(() => SU_Home());
-        }
-      // }
+      getModel();
+      if (_users[0].type == 0) {
+        Get.offAll(() => AD_Home());
+      } else if (_users[0].type == 1) {
+        Get.offAll(() => SU_Home());
+      } else if (_users[0].type == 2) {
+        Get.offAll(() => SU_Home());
+      }
     } catch (error) {
       isLoad(false);
       printError();
@@ -72,9 +61,39 @@ class UserController extends GetxController {
     }
   }
 
+  setUser(usersModel model) async {
+    await dataStore.write("user", json.encode(model.toJson()));
+  }
+
+  Future<usersModel> get getUserData async {
+    usersModel _usersModel = await _getUserData();
+    return _usersModel;
+  }
+Future<void> getModel() async {
+  if (dataStore.read("user") != null) {
+    await getUserData.then((value) {
+      if (value != null) {
+        UsersModel = value;
+        print(value.type);
+        if (value.type == 0) {
+          Get.offAll(() => AD_Home());
+        } else if (value.type == 1) {
+          Get.offAll(() => SU_Home());
+        } else if (value.type == 2) {
+          Get.offAll(() => SU_Home());
+        }
+      }
+    });
+  }
+}
+  _getUserData() async {
+    var value = await dataStore.read("user");
+    return usersModel.fromJson(json.decode(value));
+  }
+
   @override
   void onInit() {
-    // TODO: implement onInit
+    getModel();
     super.onInit();
     _rxUsers.bindStream(getReports());
     _rxCoordinator.bindStream(getCoordinator());
@@ -91,7 +110,6 @@ class UserController extends GetxController {
     return userReference.orderBy("username").snapshots().map((event) {
       List<usersModel> retVal = [];
       event.docs.forEach((element) {
-        print("element.id");
         retVal.add(usersModel.fromDocumentSnapshot(element));
       });
       return retVal;
@@ -234,7 +252,7 @@ class UserController extends GetxController {
       List<usersModel> coordinator = [];
       event.docs.forEach((element) {
         print(element.id);
-        coordinator.add(usersModel.fromJson(element));
+        coordinator.add(usersModel.fromDocumentSnapshot(element));
       });
       return coordinator;
     });

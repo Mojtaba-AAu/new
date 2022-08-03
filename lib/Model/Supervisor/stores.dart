@@ -4,14 +4,16 @@ class StoresModel{
   String? name;
   double? lat;
   double? long;
-  String? Description;
+  String? description;
+  String? storeID;
 
-  StoresModel({this.name, this.lat, this.long, this.Description});
+  StoresModel({this.name, this.lat, this.long, this.description, this.storeID});
 
   StoresModel.fromDocumentSnapshot(DocumentSnapshot  snapshot){
     name=snapshot["name"];
     lat=snapshot["latitude"];
     long=snapshot["longitude"];
-    Description=snapshot["description"];
+    description=snapshot["description"];
+    storeID=snapshot.id;
   }
 }
