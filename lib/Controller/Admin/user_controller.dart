@@ -5,6 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:project101/Model/users.dart';
+import 'package:project101/View/Coordinator/home.dart';
 import 'package:project101/View/Supervisor/home.dart';
 import 'package:project101/View/admin/home.dart';
 import 'package:get_storage/get_storage.dart';
@@ -31,27 +32,26 @@ class UserController extends GetxController {
           .where("password", isEqualTo: password.text)
           .get()
           .then((value) {
-        value.docs.forEach((element) {
-          _users.add(usersModel.fromDocumentSnapshot(element));
-        });
+          value.docs.forEach((element) {
+            _users.add(usersModel.fromDocumentSnapshot(element));
+          });
+          setUser(_users[0]);
+
+          Get.snackbar("خطاء", "خطاء في اسم المستخدم او كلمة المرور",
+              colorText: Colors.redAccent, snackPosition: SnackPosition.BOTTOM);
+
       });
       // await adminReference.get().then((value) {});
 
       isLoad(false);
-      print(_users.length);
-      if (_users.isEmpty) {
-        Get.snackbar("خطاء", "خطاء في اسم المستخدم او كلمة المرور",
-            colorText: Colors.redAccent, snackPosition: SnackPosition.BOTTOM);
-      } else {
-        setUser(_users[0]);
-      }
+
       getModel();
       if (_users[0].type == 0) {
         Get.offAll(() => AD_Home());
       } else if (_users[0].type == 1) {
-        Get.offAll(() => SU_Home());
+        Get.offAll(() => SuHome());
       } else if (_users[0].type == 2) {
-        Get.offAll(() => SU_Home());
+        Get.offAll(() => SuHome());
       }
     } catch (error) {
       isLoad(false);
@@ -69,23 +69,25 @@ class UserController extends GetxController {
     usersModel _usersModel = await _getUserData();
     return _usersModel;
   }
-Future<void> getModel() async {
-  if (dataStore.read("user") != null) {
-    await getUserData.then((value) {
-      if (value != null) {
-        UsersModel = value;
-        print(value.type);
-        if (value.type == 0) {
-          Get.offAll(() => AD_Home());
-        } else if (value.type == 1) {
-          Get.offAll(() => SU_Home());
-        } else if (value.type == 2) {
-          Get.offAll(() => SU_Home());
+
+  Future<void> getModel() async {
+    if (dataStore.read("user") != null) {
+      await getUserData.then((value) {
+        if (value != null) {
+          UsersModel = value;
+          print(value.type);
+          if (value.type == 0) {
+            Get.offAll(() => AD_Home());
+          } else if (value.type == 1) {
+            Get.offAll(() => SuHome());
+          } else if (value.type == 2) {
+            Get.offAll(() => CoorHome());
+          }
         }
-      }
-    });
+      });
+    }
   }
-}
+
   _getUserData() async {
     var value = await dataStore.read("user");
     return usersModel.fromJson(json.decode(value));
@@ -157,6 +159,14 @@ Future<void> getModel() async {
             "type": userType,
             "suID": "",
             "username": name.text
+          }).onError((error, stackTrace){
+
+          }).then((value) {
+            email.text="";
+            pass.text="";
+            phone.text="";
+            _userType=0;
+            name.text="";
           });
         }
       });

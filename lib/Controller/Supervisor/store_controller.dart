@@ -1,6 +1,8 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_google_places/flutter_google_places.dart';
 import 'package:geocoding/geocoding.dart';
@@ -9,26 +11,28 @@ import 'package:get/get.dart';
 import 'package:google_api_headers/google_api_headers.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:google_maps_webservice/places.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:project101/Model/Supervisor/stores.dart';
-import 'package:project101/theme_helper.dart';
+import 'package:path/path.dart' as p;
 
 class StoreController extends GetxController {
+  final CollectionReference storeReference =
+  FirebaseFirestore.instance.collection("storeManager");
+  final CollectionReference brandReference =
+  FirebaseFirestore.instance.collection("brandManager");
+
   @override
   void onInit() {
     // TODO: implement onInit
     super.onInit();
     getCurrentLocation();
     _store.bindStream(getStores());
+    _brand.bindStream(getBrand());
   }
 
 //Display Firebase data in a Listview without DUPLICATES in it
   final Rx<List<StoresModel>> _store = Rx<List<StoresModel>>([]);
-
   List<StoresModel> get store => _store.value;
-
-  final CollectionReference storeReference =
-      FirebaseFirestore.instance.collection("storeManager");
-  var docID = [];
 
   Stream<List<StoresModel>> getStores() {
     return storeReference.snapshots().map((event) {
@@ -62,7 +66,8 @@ void onChangeDesc(String value){
       "name": name.text,
       "description": desc.text,
       "latitude":latitude,
-      "longitude":longitude
+      "longitude":longitude,
+      "coorID":""
     }).then((value){
     name.text="";
     desc.text="";
@@ -193,6 +198,62 @@ void onChangeDesc(String value){
     print(
         "animating camera to (lat: ${_location.latitude}, long: ${_location.longitude}");
     controller.animateCamera(CameraUpdate.newCameraPosition(_cameraPosition));
+    update();
+  }
+
+  /////////////////////////////////
+
+  final Rx<List<BrandModels>> _brand = Rx<List<BrandModels>>([]);
+  List<BrandModels> get brand => _brand.value;
+
+  Stream<List<BrandModels>> getBrand() {
+    return brandReference.snapshots().map((event) {
+      List<BrandModels> retVal = [];
+      event.docs.forEach((element) {
+        retVal.add(BrandModels.fromDocumentSnapshot(element));
+      });
+      return retVal;
+    });
+  }
+
+
+  File? image;
+  String url="";
+  void getImage() async {
+    try{
+      final myImage = await ImagePicker().pickImage(source: ImageSource.gallery);
+      image = File(myImage!.path);
+    }catch(e){
+      print(e);
+    }
+    update();
+  }
+
+  uploadImage() async {
+    print("jkljkl");
+    TaskSnapshot ref = FirebaseStorage.instance
+        .ref()
+        .child(p.basename(image!.path))
+        .putFile(image!)
+        .snapshot;
+    url = await ref.ref.getDownloadURL();
+    print(url);
+    update();
+  }
+  final brandName=TextEditingController();
+  void addBrand() {
+    uploadImage();
+    if (url.isNotEmpty) {
+      brandReference.doc().set({
+        "brandName": brandName.text,
+        "image": url.toString(),
+        "coorID": "",
+      }).then((value) {
+        brandName.text = "";
+        url = "";
+        image!.delete();
+      });
+    }
     update();
   }
 }

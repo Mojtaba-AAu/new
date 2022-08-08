@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:project101/Controller/Admin/user_controller.dart';
-import 'package:project101/View/Account/g.dart';
+import 'package:project101/View/Account/signIn.dart';
 import 'package:project101/View/Supervisor/product_manager.dart';
 import 'package:project101/View/Supervisor/reports.dart';
 import 'package:project101/View/Supervisor/store_manager.dart';
 import 'package:project101/View/Supervisor/user_manager.dart';
 
 
-class SU_Home extends GetWidget<UserController> {
-  SU_Home({Key? key}) : super(key: key);
-  String email="";
-  String mobile="";
+class SuHome extends GetWidget<UserController> {
+  SuHome({Key? key}) : super(key: key);
+  final String email="";
+  final String mobile="";
   final user=GlobalKey<FormState>();
 
   @override
@@ -27,10 +27,17 @@ class SU_Home extends GetWidget<UserController> {
                 padding:const EdgeInsets.only(top: 20),
                 child: Card(
                   elevation: 5,
-                  color: Colors.blue.shade200,
                   child: ListTile(
-                    title: const Text("الاسم"),
-                    subtitle: Text(controller.UsersModel!.userName.toString()),
+                    trailing: Container(
+                      padding: const EdgeInsets.all(5),
+                        decoration: BoxDecoration(
+                          color: Colors.grey.shade200,
+                          borderRadius: BorderRadius.circular(15),
+                          border: Border.all(color: Colors.black54,width: 2,style: BorderStyle.solid)
+                        ),
+                        child: const Text("مشرف")),
+                    leading: Image.asset("images/profile.png",width: 50,height: 50,),
+                    title: Text(controller.UsersModel!.userName.toString()),
                     onTap: (){
 
                     },
@@ -38,7 +45,6 @@ class SU_Home extends GetWidget<UserController> {
                 ),
               ),
               SizedBox(
-                //height: Get.height/1.9,
                 child: GridView.count(
                   shrinkWrap: true,
                     crossAxisCount: 2,

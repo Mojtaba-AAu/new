@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:project101/Controller/Admin/user_controller.dart';
-import 'package:project101/View/Account/g.dart';
+import 'package:project101/View/Account/signIn.dart';
 import 'package:project101/View/admin/manage_users.dart';
 import 'package:project101/View/admin/report.dart';
-import 'package:project101/View/admin/test.dart';
 import 'package:project101/theme_helper.dart';
 
 class AD_Home extends GetWidget<UserController>{
@@ -21,52 +20,52 @@ class AD_Home extends GetWidget<UserController>{
           child: Column(
             children: [
               Padding(
-                padding:const EdgeInsets.only(top: 20),
+                padding:const EdgeInsets.only(top: 20,bottom: 20),
                 child: Card(
                   elevation: 5,
-                  color: Colors.blue.shade200,
                   child: ListTile(
-                    title: Text("الاسم"),
-                    subtitle: Text(controller.UsersModel!.userName.toString()),
+                    trailing: Container(
+                        padding: const EdgeInsets.all(5),
+                        decoration: BoxDecoration(
+                            color: Colors.grey.shade200,
+                            borderRadius: BorderRadius.circular(15),
+                            border: Border.all(color: Colors.black54,width: 2,style: BorderStyle.solid)
+                        ),
+                        child: const Text("مدير")),
+                    leading: Image.asset("images/profile.png",width: 50,height: 50,),
+                    title: Text(controller.UsersModel!.userName.toString()),
                     onTap: (){
-                      Get.to(()=>IconButtonBugView());
+
                     },
                   ),
                 ),
               ),
-              Padding(
-                padding:const EdgeInsets.only(top: 20),
-                child: Card(
-                  elevation: 5,
-                  color: Colors.blue.shade200,
-                  child: ListTile(
-                    title: Text("التقارير"),
-                    subtitle: Text("إضغط هنا لإدرة التقارير واستعراضها"),
-                    onTap: (){
-                      Get.to(()=>AD_Report());
-                    },
-                  ),
-                ),
-              ),
-              Padding(
-                padding:const EdgeInsets.only(top: 20),
-                child: Card(
-                  elevation: 5,
-                  color: Colors.blue.shade200,
-                  child: ListTile(
-                    title: const Text("إدارة المستخدمين"),
-                    subtitle: const Text("إضغط هنا لإدارة الموظفين"),
-                    onTap: (){
-                      Get.to(()=>ManageUsers());
-                    },
-                  ),
+              SizedBox(
+                child: GridView.count(
+                    shrinkWrap: true,
+                    crossAxisCount: 2,
+                    crossAxisSpacing: 4.0,
+                    mainAxisSpacing: 8.0,
+                    children: List.generate(choices.length, (index) {
+                      return Center(
+                        child: InkWell(child: SelectCard(choice: choices[index]),onTap: (){
+                          if(index.isEqual(0)){
+                            Get.to(()=>AD_Report());
+                          }
+                          if(index.isEqual(1)){
+                            Get.to(()=>ManageUsers());
+                          }
+                        },),
+                      );
+                    }
+                    )
                 ),
               ),
               Container(
                 margin: const EdgeInsets.only(top: 15),
 
                 child: Card(
-                  elevation: 5,
+                  elevation: 10,
                   child: MaterialButton(
                       child: const Padding(
                         padding: EdgeInsets.symmetric(
@@ -93,80 +92,35 @@ class AD_Home extends GetWidget<UserController>{
     );
   }
 }
-// _editUser(email,mobile,user){
-//   return Form(
-//     key: user,
-//     child: Column(
-//       children: <Widget>[
-//         Padding(
-//           padding: const EdgeInsets.only(
-//               top: 20.0,
-//               bottom: 5.0,
-//               left: 25.0,
-//               right: 25.0),
-//           child: TextFormField(
-//             // controller: email,
-//             decoration: InputDecoration(
-//                 prefixIcon: const Icon(Icons.person,),
-//                 // icon: Icon(Icons.person),
-//                 contentPadding: const EdgeInsets.all(4),
-//                 hintText: "إسم المستخدم",
-//                 filled: true,
-//                 fillColor: Colors.grey[200],
-//                 enabledBorder: OutlineInputBorder(
-//                     borderSide: BorderSide(
-//                         color: Colors.grey.shade700,
-//                         style: BorderStyle.solid,
-//                         width: 2)),
-//                 focusedBorder: const OutlineInputBorder(
-//                     borderSide: BorderSide(
-//                         color: Colors.blue,
-//                         style: BorderStyle.solid,
-//                         width: 2))),
-//             validator: (value) {
-//               if (value!.isEmpty) {
-//                 return "ادخل اسم المستخدم";
-//               }
-//               return null;
-//             },
-//           ),
-//         ),
-//         Padding(
-//           padding: const EdgeInsets.only(
-//               top: 20.0,
-//               bottom: 50.0,
-//               left: 25.0,
-//               right: 25.0),
-//           child: TextFormField(
-//             // controller: mobile,
-//             obscureText: true,
-//             decoration:  InputDecoration(
-//                 prefixIcon: const Icon(Icons.password),
-//                 // icon: Icon(Icons.person),
-//                 contentPadding: EdgeInsets.all(4),
-//                 hintText: " كلمة المرور",
-//                 filled: true,
-//                 fillColor: Colors.grey.shade300,
-//                 enabledBorder: OutlineInputBorder(
-//                     borderSide: BorderSide(
-//                         color: Colors.grey.shade700,
-//                         style: BorderStyle.solid,
-//                         width: 2)),
-//                 focusedBorder: const OutlineInputBorder(
-//                     borderSide: BorderSide(
-//                         color: Colors.blue,
-//                         style: BorderStyle.solid,
-//                         width: 2))),
-//             validator: (value) {
-//               if (value!.isEmpty) {
-//                 return "ادخل كلمة المرور";
-//               }
-//               return null;
-//             },
-//           ),
-//         ),
-//         // Container(child: Text(False?"رقم الهاتف غير صحيح":"",style: TextStyle(color: Colors.red,fontFamily: 'Cairo'),),)
-//       ],
-//     ),
-//   );
-// }
+class Choice {
+  const Choice({required this.title, required this.image});
+  final String title;
+  final AssetImage image;
+}
+
+const List<Choice> choices = <Choice>[
+  Choice(title: 'التقارير', image:AssetImage("images/report.png")),
+  Choice(title: 'إدارة المستخدمين', image: AssetImage("images/user-manager.png")),
+ ];
+
+class SelectCard extends StatelessWidget {
+  const SelectCard({Key? key, required this.choice}) : super(key: key);
+  final Choice choice;
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+        elevation: 5,
+        child: Center(
+          child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Expanded(child: Image(image: choice.image,width: 100,height: 100,)),
+                Center(child: Text(choice.title,style: const TextStyle(fontWeight: FontWeight.w400),)),
+              ]
+          ),
+        )
+    );
+  }
+}

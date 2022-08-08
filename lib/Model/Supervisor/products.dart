@@ -3,7 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 class ProductsModel{
   String? product;
   String? description;
-  double? barCode;
+  String? barCode;
   String? image;
   String? storeID;
 

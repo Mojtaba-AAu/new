@@ -49,6 +49,7 @@ class ReportsController extends GetxController {
   // }
   /////////////////////////
   var record = <Report>[];
+  
 
   Widget buildBody(String docID,Timestamp Date) {
     return StreamBuilder<QuerySnapshot>(

@@ -4,7 +4,7 @@ import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:project101/helper.dart';
 import 'package:hexcolor/hexcolor.dart';
-import 'View/Account/signIn.dart';
+import 'View/Account/splash.dart';
 
 
 void main() async {
@@ -18,8 +18,8 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Color _primaryColor = HexColor('#DC54FE');
-    Color _accentColor = HexColor('#5AD3BC');
+    // Color _primaryColor = HexColor('#DC54FE');
+    // Color _accentColor = HexColor('#5AD3BC');
 
     // Design color
     // Color _primaryColor= HexColor('#FFC867');
@@ -30,16 +30,17 @@ class MyApp extends StatelessWidget {
     // Color _accentColor= HexColor('#5E18C8');
 
     // Our Logo Blue Color
-    //Color _primaryColor= HexColor('#651BD2');
-    //Color _accentColor= HexColor('#320181');
+    Color _primaryColor= HexColor('#4974a5');
+    Color _accentColor= HexColor('#fd9418');
     return GetMaterialApp(
       initialBinding: Binding(),
       title: "إدارة المبيعات",
       theme: ThemeData(
           primaryColor: _primaryColor,
-          colorScheme: ColorScheme.fromSwatch().copyWith(
-            secondary: _accentColor, // Your accent color
-          ),
+          // colorScheme: ColorScheme.fromSwatch().copyWith(
+          //   secondary: _accentColor, // Your accent color
+          // ),
+          accentColor: _accentColor,
           scaffoldBackgroundColor: Colors.grey.shade100,
           primarySwatch: Colors.blueGrey,
           fontFamily: 'Cairo'
@@ -47,6 +48,6 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       locale: const Locale('ar'),
       fallbackLocale: const Locale('ar'),
-      home:SplashScreen(title: 'إدرة الرفوف',),);
+      home:const SplashScreen(),);
   }
 }

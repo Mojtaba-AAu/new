@@ -1,15 +1,13 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:project101/View/admin/add_user.dart';
 import 'package:project101/theme_helper.dart';
 
 import '../../Controller/Admin/user_controller.dart';
-import '../../Model/users.dart';
 
 class ManageUsers extends GetWidget<UserController> {
   ManageUsers({Key? key}) : super(key: key);
-  UserController userController = Get.put(UserController());
+  final UserController userController = Get.put(UserController());
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -32,20 +30,17 @@ class ManageUsers extends GetWidget<UserController> {
                               child: Container(
                                 child: ExpansionTile(
                                   backgroundColor: Colors.blueGrey.shade50,
-                                  leading:
-                                      Icon(Icons.perm_contact_cal_outlined),
                                   textColor: Colors.cyan.shade700,
                                   iconColor: Colors.cyan.shade700,
                                   title: Column(
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
                                     children: [
-                                      ListTile(
-                                        title: Text(userController
+                                      Text(userController
                                             .getUser[index].userName
                                             .toString()),
                                         // leading: Icon(Icons.manage_accounts),
-                                      )
+
                                     ],
                                   ),
                                   children: [
@@ -126,8 +121,7 @@ class ManageUsers extends GetWidget<UserController> {
                                                       .getUser[index].type ==
                                                   1
                                               ? () {
-                                                  addCoordinator(userController
-                                                      .coordinator,userController.getUser[index].uid.toString());
+                                                  addCoordinator(userController.getUser[index].uid.toString());
                                                 }
                                               : null),
                                     ),
@@ -151,7 +145,7 @@ class ManageUsers extends GetWidget<UserController> {
         ));
   }
 
-  void addCoordinator(List coordinator,String suID) {
+  void addCoordinator(String suID) {
     Get.bottomSheet(
       SizedBox(
         height: Get.height/2,

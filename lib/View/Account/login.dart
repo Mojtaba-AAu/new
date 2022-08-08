@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:project101/Controller/Admin/user_controller.dart';
@@ -10,34 +9,34 @@ class SignIn extends GetWidget<UserController> {
 
   final form = GlobalKey<FormState>();
 
-  _signIn(name, password) async {
-    CollectionReference user =
-        FirebaseFirestore.instance.collection("category");
-    await user
-        .where("username", isEqualTo: name)
-        .where("password", isEqualTo: password)
-        .get()
-        .then((QuerySnapshot querySnapshot) {
-      querySnapshot.docs.forEach((doc) {
-        // print(doc.data()!["data"]);
-
-        // if(doc["type"]==0){
-        //   print("Admin");
-        // }else if(doc["type"]==1){
-        //   print("mon");
-        // }else if(doc["type"]==2){
-        //   print("4");
-        // }
-      });
-    });
-  }
+  // _signIn(name, password) async {
+  //   CollectionReference user =
+  //       FirebaseFirestore.instance.collection("category");
+  //   await user
+  //       .where("username", isEqualTo: name)
+  //       .where("password", isEqualTo: password)
+  //       .get()
+  //       .then((QuerySnapshot querySnapshot) {
+  //     querySnapshot.docs.forEach((doc) {
+  //       // print(doc.data()!["data"]);
+  //
+  //       // if(doc["type"]==0){
+  //       //   print("Admin");
+  //       // }else if(doc["type"]==1){
+  //       //   print("mon");
+  //       // }else if(doc["type"]==2){
+  //       //   print("4");
+  //       // }
+  //     });
+  //   });
+  // }
 
   void logincus(context) async {
     // if (form.currentState!.validate()) {
     //
     // }
     //  _signIn("dart", "123456");
-    Get.to(() => SU_Home());
+    Get.to(() => SuHome());
   }
 
   UserController _controller = Get.put(UserController());

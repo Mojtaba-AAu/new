@@ -16,6 +16,7 @@ class ProductController extends GetxController {
   var product = TextEditingController();
   var code = TextEditingController();
   var desc = TextEditingController();
+  var isLoad = false.obs;
 
   String? barCode;
   String? barError;
@@ -29,21 +30,56 @@ class ProductController extends GetxController {
       });
     } catch (e) {
       barError = "غير قادر على قراءة هذا";
+      Get.snackbar("خطاء", "غير قادر على قراءة هذا",
+          colorText: Colors.redAccent, snackPosition: SnackPosition.BOTTOM);
     }
     update();
   }
-  late File image;
-  String? url;
+
+  File? image;
+  String url="";
   void getImage() async {
-    final myImage = await ImagePicker().pickImage(source: ImageSource.gallery);
+    try{
+      final myImage = await ImagePicker().pickImage(source: ImageSource.gallery);
       image = File(myImage!.path);
-update();
+    }catch(e){
+      print(e);
+    }
+    update();
   }
-  void uploadImage() async {
+
+  uploadImage() async {
+    print("jkljkl");
     TaskSnapshot ref = FirebaseStorage.instance
         .ref()
-        .child(p.basename(image.path)).putFile(image).snapshot;
-    url=await ref.ref.getDownloadURL();
+        .child(p.basename(image!.path))
+        .putFile(image!)
+        .snapshot;
+    url = await ref.ref.getDownloadURL();
+    print(url);
+    update();
+  }
+
+  void addProduct(String storeID) {
+    isLoad(true);
+    uploadImage();
+    if (url.isNotEmpty) {
+      productReference.doc().set({
+        "product": product.text,
+        "description": desc.text,
+        "barCode": barCode.toString(),
+        "image": url.toString(),
+        "storeID": storeID,
+      }).then((value) {
+        product.text = "";
+        desc.text = "";
+        code.text="";
+        barCode = "";
+        url = "";
+        image!.delete();
+      });
+    }
+    isLoad(false);
     update();
   }
 
@@ -68,25 +104,38 @@ update();
                     itemCount: snapshot.data!.docs.length,
                     shrinkWrap: true,
                     itemBuilder: (BuildContext context, index) {
-                      return Row(
-                        children: [
-                          Image.network(
-                            record[index].image.toString(),
-                            width: 70,
-                            height: 70,
-                          ),
-                          Column(
+                      return Card(
+                        elevation: 5,
+                        child: Container(
+                          padding: const EdgeInsets.all(10),
+                          child: Row(
                             children: [
-                              Text("المنتج : ${record[index].product}"),
-                              const Divider(color: Colors.grey),
-                              Text("الوصف : ${record[index].product}"),
-                              const Divider(color: Colors.grey),
-                              Text("الباركود : ${record[index].product}"),
+                              Container(
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(15)
+                                ),
+                                child: Image.network(
+                                  record[index].image.toString(),
+                                  width: 50,
+                                  height: 50,
+                                ),
+                              ),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text("المنتج : ${record[index].product}"),
+                                  const Divider(color: Colors.grey),
+                                  Text("الوصف : ${record[index].product}"),
+                                  const Divider(color: Colors.grey),
+                                  Text("الباركود : ${record[index].product}"),
+                                ],
+                              ),
+                              const Spacer(),
+                              IconButton(
+                                  onPressed: () {}, icon: const Icon(Icons.edit)),
                             ],
                           ),
-                          IconButton(
-                              onPressed: () {}, icon: const Icon(Icons.edit)),
-                        ],
+                        ),
                       );
                     }),
               )

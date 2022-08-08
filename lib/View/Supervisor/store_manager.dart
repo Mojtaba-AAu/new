@@ -50,64 +50,114 @@ class _StoreManagerState extends State<StoreManager>
         title: const Text("إدارة المتاجر والعلامات التجارية"),
       ),
       body: SafeArea(
-        child: Obx(() => (storeController.store.isNotEmpty)
-            ? ListView.builder(
-                itemCount: storeController.store.length,
-                itemBuilder: (context, index) {
-                  return Card(
-                    elevation: 5,
-                    child: Container(
-                      padding: const EdgeInsets.all(10),
-                      child: Row(
-                        children: [
-                          Container(
-                            width: Get.width / 1.3,
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  " الإسم : ${storeController.store[index].name}",
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                                const Divider(
-                                  color: Colors.grey,
-                                ),
-                                Text(
-                                  "الإحداثيات : ${storeController.store[index].lat} , ${storeController.store[index].long}",
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                                const Divider(
-                                  color: Colors.grey,
-                                ),
-                                Text(
-                                  "الوصف : ${storeController.store[index].description}",
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                              ],
+        child: SingleChildScrollView(
+          physics: const ScrollPhysics(),
+          child: Column(
+            children: [
+              storeController.store.isNotEmpty
+                  ? ListView(
+                shrinkWrap: true,
+                    children: [
+                      Text("المتاجر :"),
+                    ],
+                  )
+                  : Container(),
+              Obx(() => (storeController.store.isNotEmpty)
+                  ? ListView.builder(
+                      shrinkWrap: true,
+                      itemCount: storeController.store.length,
+                      itemBuilder: (context, index) {
+                        return Card(
+                          elevation: 5,
+                          child: Container(
+                            padding: const EdgeInsets.all(10),
+                            child: Container(
+                              width: Get.width / 1.3,
+                              child: Column(
+                                crossAxisAlignment:
+                                    CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    " الإسم : ${storeController.store[index].name}",
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                  const Divider(
+                                    color: Colors.grey,
+                                  ),
+                                  Text(
+                                    "الإحداثيات : ${storeController.store[index].lat} , ${storeController.store[index].long}",
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                  const Divider(
+                                    color: Colors.grey,
+                                  ),
+                                  Text(
+                                    "الوصف : ${storeController.store[index].description}",
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
-                          const Spacer(),
-                          Container(
+                        );
+                      })
+                  : const Center(
+                      child: Text("empty"),
+                    )),
+              storeController.brand.isNotEmpty
+                  ? ListView(
+                shrinkWrap: true,
+                children: [
+                  Text("العلامات التجارية :"),
+                ],
+              )
+                  : Container(),
+
+              Obx(() => (storeController.brand.isNotEmpty)
+                  ? ListView.builder(
+                  shrinkWrap: true,
+                  itemCount: storeController.brand.length,
+                  itemBuilder: (context, index) {
+                    return Card(
+                      elevation: 5,
+                      child: Container(
+                        padding: const EdgeInsets.all(10),
+                        child: ListTile(
+                          leading:  Container(
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(50)),
+                            child:Image.network(
+                              storeController.brand[index].image.toString(),
+                              width: 70,
+                              height: 70,
+                            )
+                          ),
+                          title: Text(storeController.brand[index].brandName.toString()),
+                          trailing: Container(
                             decoration: BoxDecoration(
                                 color: Colors.blueGrey,
                                 borderRadius: BorderRadius.circular(50),
-                                border:
-                                    Border.all(color: Get.theme.colorScheme.secondary, width: 2)),
+                                border: Border.all(
+                                    color:
+                                    Get.theme.colorScheme.secondary,
+                                    width: 2)),
                             child: IconButton(
                                 onPressed: () {},
                                 icon: Icon(
                                   Icons.edit,
                                   color: Get.theme.colorScheme.secondary,
                                 )),
-                          )
-                        ],
+                          ),
+                        )
                       ),
-                    ),
-                  );
-                })
-            : const Center(
+                    );
+                  })
+                  : const Center(
                 child: Text("empty"),
               )),
+            ],
+          ),
+        ),
       ),
       floatingActionButton: SpeedDial(
         child: AnimatedIcon(
@@ -256,6 +306,7 @@ class _StoreManagerState extends State<StoreManager>
       ),
     );
   }
+
   void addMarking() {
     final formKey = GlobalKey<FormState>();
     Get.bottomSheet(
@@ -272,13 +323,34 @@ class _StoreManagerState extends State<StoreManager>
                         children: [
                           TextFormField(
                             textInputAction: TextInputAction.next,
-                            // controller: storeController.name,
-                            decoration: ThemeHelper()
-                                .textInputDecoration("إسم المتجر", Icons.store),
+                            controller: storeController.brandName,
+                            decoration: InputDecoration(
+                              labelText: "اسم الشعار",
+                              // hintText: hintText,
+                              fillColor: Colors.white,
+                              filled: true,
+                              contentPadding:
+                                  EdgeInsets.fromLTRB(20, 10, 20, 10),
+                              focusedBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(10.0),
+                                  borderSide: BorderSide(color: Colors.grey)),
+                              enabledBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(10.0),
+                                  borderSide:
+                                      BorderSide(color: Colors.grey.shade400)),
+                              errorBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(10.0),
+                                  borderSide: BorderSide(
+                                      color: Colors.red, width: 2.0)),
+                              focusedErrorBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(100.0),
+                                  borderSide: BorderSide(
+                                      color: Colors.red, width: 2.0)),
+                            ),
                             onChanged: (value) {},
                             validator: (value) {
                               if (value!.trim().isEmpty) {
-                                return "ادخل إسم المتجر";
+                                return "ادخل إسم الشركة";
                               }
                               return null;
                             },
@@ -286,11 +358,23 @@ class _StoreManagerState extends State<StoreManager>
                           const SizedBox(
                             height: 30,
                           ),
+                          Container(
+                            decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(20)),
+                            child: storeController.image != null
+                                ? Image.file(
+                                    storeController.image!,
+                                    width: 100,
+                                    height: 100,
+                                  )
+                                : Container(),
+                          ),
                           MaterialButton(
                             onPressed: () {
-                              Get.to(() => GoogleMaps());
+                              storeController.getImage();
                             },
-                            child: const Text("تحديد مكان المتجر"),
+                            child: const Text("إضافة شعار"),
                           ),
                           const SizedBox(
                             height: 15,
@@ -312,25 +396,24 @@ class _StoreManagerState extends State<StoreManager>
                                 ),
                                 onPressed: () {
                                   if (formKey.currentState!.validate()) {
-                                    if (storeController.longitude != null &&
-                                        storeController.latitude != null) {
-                                      storeController.addStore();
-                                      Get.back();
+                                    if (storeController.image != null) {
+                                      storeController.addBrand();
                                     } else {
                                       Get.defaultDialog(
                                           confirm: MaterialButton(
                                               onPressed: () {
                                                 Get.back();
-                                                Get.to(() => GoogleMaps());
+                                                Get.to(() =>
+                                                    storeController.getImage());
                                               },
                                               child: const Text("حسنا")),
-                                          title: "حدد مكان المتجر",
-                                          titleStyle:
-                                              TextStyle(color: Colors.red),
-                                          content: Image.asset(
-                                            "images/location.png",
-                                            width: 150,
-                                            height: 150,
+                                          title: "حدد صورة للمنتج",
+                                          titleStyle: const TextStyle(
+                                              color: Colors.red),
+                                          content: const Icon(
+                                            Icons.photo_outlined,
+                                            size: 100,
+                                            color: Colors.red,
                                           ));
                                     }
                                   }
